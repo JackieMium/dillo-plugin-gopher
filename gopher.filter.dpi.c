@@ -399,12 +399,35 @@ static void read_data_htmlenc(int s) {
 }
 
 static void render_dir(int s, const char *url) {
-    dpi_send_header(url, "text/html; charset=UTF-8");
+    dpi_send_header(
+        url,
+        "text/html; charset=UTF-8"
+    );
+
     printf("<!DOCTYPE html>");
-    printf("<html><head><title>");
+    printf("<html><head>");
+    printf("<meta charset=\"UTF-8\">");
+    printf("<title>");
     print_htmlenc(url);
-    printf("</title></head><body><table>");
+    printf("</title>");
+
+    /*
+     * Gopher menus use <pre> to preserve spacing,
+     * but menu text is prose, not code. Override
+     * Dillo's normal monospace styling here.
+     */
+    printf(
+        "<style>"
+        "pre{"
+        "font-family:sans-serif;"
+        "}"
+        "</style>"
+    );
+
+    printf("</head><body><table>");
+
     read_response(s);
+
     printf("</table></body></html>");
 }
 
